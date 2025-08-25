@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Editkaro.in — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg: #0b0d10;          /* page background */
+      --card: #11151b;        /* card background */
+      --soft: #1a2028;        /* soft surface */
+      --text: #e8eef6;        /* main text */
+      --muted:#97a3b6;        /* muted text */
+      --brand:#8ef0ff;        /* accent */
+      --brand-2:#8fffbd;      /* accent secondary */
+      --danger:#ff6b6b;
+      --ring: rgba(142, 240, 255, .25);
+      --radius: 18px;
+      --shadow: 0 15px 40px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:'Inter',system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 20% -10%, rgba(142,240,255,.06), transparent 60%),
+                  radial-gradient(900px 600px at 110% 20%, rgba(143,255,189,.05), transparent 60%),
+                  var(--bg);
+    }
+
+    /* ---------- Header ---------- */
+    .wrap{max-width:1200px;margin:0 auto;padding:24px}
+    header{
+      position:sticky;top:0;z-index:10;
+      backdrop-filter:saturate(160%) blur(10px);
+      background:linear-gradient( to bottom, rgba(11,13,16,.9), rgba(11,13,16,.6));
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .bar{display:flex;align-items:center;gap:14px}
+    .logo{
+      display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.3px;
+    }
+    .logo .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(45deg,var(--brand),var(--brand-2));box-shadow:0 0 0 6px var(--ring)}
+    .logo small{display:block;color:var(--muted);font-weight:600;letter-spacing:.2px}
+
+    .search{
+      margin-left:auto;display:flex;gap:10px;align-items:center;flex:1;max-width:520px
+    }
+    .search input{
+      flex:1;padding:12px 14px;border-radius:999px;background:var(--soft);border:1px solid rgba(255,255,255,.08);
+      color:var(--text);outline:none;
+    }
+    .search input:focus{box-shadow:0 0 0 6px var(--ring);}
+    .search button{border:0;padding:10px 16px;border-radius:999px;background:linear-gradient(45deg,var(--brand),var(--brand-2));font-weight:700}
+
+    /* ---------- Filters ---------- */
+    .filters{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+    .chip{padding:8px 14px;border-radius:999px;background:var(--soft);border:1px solid rgba(255,255,255,.08);color:var(--text);cursor:pointer;font-weight:600}
+    .chip.active{background:linear-gradient(45deg, rgba(142,240,255,.14), rgba(143,255,189,.14));border-color:rgba(255,255,255,.22)}
+
+    /* ---------- Gallery ---------- */
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px;margin-top:24px}
+    @media (max-width:1200px){.grid{grid-template-columns:repeat(8,1fr)}}
+    @media (max-width:800px){.grid{grid-template-columns:repeat(4,1fr)}}
+
+    .card{
+      grid-column:span 4;background:var(--card);border-radius:var(--radius);overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.06);
+      transition:transform .2s ease, box-shadow .2s ease,border-color .2s ease
+    }
+    .card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:rgba(255,255,255,.18)}
+    .thumb{position:relative;aspect-ratio:16/9;background:#0f141a;overflow:hidden}
+    .thumb img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.08)}
+    .play{
+      position:absolute;inset:auto auto 10px 10px;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);
+      border:1px solid rgba(255,255,255,.2);padding:6px 10px;border-radius:10px;font-weight:700;display:flex;align-items:center;gap:8px
+    }
+    .meta{padding:14px 14px 16px}
+    .title{margin:0 0 6px;font-size:16px;font-weight:700}
+    .badges{display:flex;gap:8px;flex-wrap:wrap}
+    .badge{font-size:12px;padding:6px 10px;border-radius:999px;background:rgba(142,240,255,.12);border:1px solid rgba(142,240,255,.35)}
+
+    /* ---------- Modal ---------- */
+    .modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,.6)}
+    .modal.open{display:flex}
+    .modal .box{width:min(1100px, 92vw);background:var(--card);border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.12);box-shadow:var(--shadow)}
+    .modal header{position:unset;background:unset;border:0}
+    .modal .frame{aspect-ratio:16/9;background:black}
+    .modal .frame iframe, .modal .frame video{width:100%;height:100%;border:0;display:block}
+    .modal .top{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.06)}
+    .modal .close{border:0;background:transparent;color:var(--text);font-weight:800;font-size:18px;padding:8px 12px;border-radius:10px}
+    .modal .close:hover{background:rgba(255,255,255,.08)}
+
+    /* ---------- Footer ---------- */
+    footer{opacity:.8;color:var(--muted);padding:40px 0;text-align:center}
+    a.clean{color:var(--brand)}
+  </style>
+</head>
+<body>
+  <!-- ======= Header ======= -->
+  <header>
+    <div class="wrap">
+      <div class="bar">
+        <div class="logo" aria-label="Editkaro.in">
+          <span class="dot" aria-hidden="true"></span>
+          <div>
+            <div>EDITKARO<span style="color:var(--brand)">.in</span></div>
+            <small>Social Media Marketing & Video Editing</small>
+          </div>
+        </div>
+
+        <form class="search" id="searchForm" role="search" aria-label="Search videos">
+          <input id="searchInput" type="search" placeholder="Search by title or tag…" />
+          <button type="submit">Search</button>
+        </form>
+      </div>
+
+      <nav class="filters" aria-label="Category filters">
+        <button class="chip active" data-filter="all">All</button>
+        <button class="chip" data-filter="short">Short‑form</button>
+        <button class="chip" data-filter="long">Long‑form</button>
+        <button class="chip" data-filter="gaming">Gaming</button>
+        <button class="chip" data-filter="football">Football edits</button>
+        <button class="chip" data-filter="ecom">eCommerce ads</button>
+        <button class="chip" data-filter="doc">Documentary</button>
+        <button class="chip" data-filter="grade">Color grading</button>
+        <button class="chip" data-filter="anime">Anime edits</button>
+        <button class="chip" data-filter="ads">Ads</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ======= Gallery ======= -->
+  <main class="wrap">
+    <section class="grid" id="gallery" aria-live="polite">
+      <!-- Card Template (duplicate & edit) -->
+      
+      <!-- Short‑form -->
+      <article class="card" data-cat="short" data-tags="reel tiktok product" data-title="15s Product Reel">
+        <div class="thumb">
+          <img alt="Product reel preview" src="https://images.unsplash.com/photo-1512446816042-444d64126786?q=80&w=1200&auto=format&fit=crop" />
+          <button class="play" data-src="https://www.youtube.com/embed/ScMzIvxBSi4?autoplay=1">▶ Play</button>
+        </div>
+        <div class="meta">
+          <h3 class="title">15s Product Reel</h3>
+          <div class="badges"><span class="badge">Short‑form</span><span class="badge">eCommerce</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-cat="short" data-tags="reel instagram fashion" data-title="Outfit Transition Reel">
+        <div class="thumb">
+          <img alt="Outfit reel" src="https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=1200&auto=format&fit=crop" />
+          <button class="play" data-src="https://www.youtube.com/embed/tgbNymZ7vqY?autoplay=1">▶ Play</button>
+        </div>
+        <div class="meta">
+          <h3 class="title">Outfit Transition Reel</h3>
+          <div class="badges"><span class="badge">Short‑form</span><span class="badge">Fashion</span></div>
+        </div>
+      </article>
+
+      <!-- Long‑form -->
+      <article class="card" data-cat="long" data-tags="youtube vlog travel" data-title="Travel Vlog — Ladakh">
+        <div class="thumb">
+          <img alt="Mountain vlog" src="https://images.unsplash.com/photo-1509644851169-2acc08aa25b8?q=80&w=1200&auto=format&fit=crop" />
+          <button class="play" data-src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1">▶ Play</button>
+        </div>
+        <div class="meta">
+          <h3 class="title">Travel Vlog — Ladakh</h3>
+          <div class="badges"><span class="badge">Long‑form</span><span class="badge">Documentary</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-cat="long" data-tags="interview podcast studio" data-title="Founder Interview — Bootstrapped to 1M">
+        <div class="thumb">
+          <img alt="Studio interview" src="https://images.unsplash.com/photo-1581092795360-fd1ca04f0952?q=80&w=1200&auto=format&fit=crop" />
+          <button class="play" data-src="https://www.youtube.com/embed/oHg5SJYRHA0?autoplay=1">▶ Play</button>
+        </div>
+        <div class="meta">
+          <h3 class="title">Founder Interview — Bootstrapped to 1M</h3>
+          <div class="badges"><span class="badge">Long‑form</span><span class="badge">Corporate</span></div>
+        </div>
+      </article>
+
+      <!-- Gaming -->
+      <article class="card" data-cat="gaming" data-tags="montage fps highlight" data-title="FPS Highlights — Ultra Cut">
+        <div class="thumb">
+          <img alt="Gaming montage" src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1200&auto=format&fit=crop" />
+          <button class="play" data-src="https://www.youtube.com/embed/jfKfPfyJRdk?autoplay=1">▶ Play</button>
+        </div>
+        <div class="meta">
+          <h3 class="title">FPS Highlights — Ultra Cut</h3>
+          <div class="badges"><span class="badge">Gaming</span><span class="badge">Montage</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-cat="gaming" data-tags="stream edits meme" data-title="Streamer Memes — Best Moments">
+        <div class="thumb">
+          <img alt="Streamer moments" src="https://images.unsplash.com/photo-1593642634315-48f5414c3ad9?q=80&w=1200&auto=format&fit=crop" />
+          <button class="play" data-src="https://www.youtube.com/embed/2vjPBrBU-TM?autoplay=1">▶ Play</button>
+        </div>
+        <div class="meta">
+          <h3 class="title">Streamer Memes — Best Moments</h3>
+          <div class="badges"><span class="badge">Gaming</span><span class="badge">Shorts</span></div>
+        </div>
+      </article>
+
+      <!-- Football -->
+      <article class="card" data-cat="football" data-tags="football edit slowmo" data-title="Football Edit — Pace & Precision">
+        <div class="thumb">
+          <img alt="Football edit" src="https://images.unsplash.com/photo-1543326727-cf6c39da1e0b?q=80&w=1200&auto=format&fit=crop" />
+          <button class="play" data-src="https://www.youtube.com/embed/zpOULjyy-n8?rel=0&autoplay=1">▶ Play</button>
+        </div>
+        <div class="meta">
+          <h3 class="title">Football Edit — Pace & Precision</h3>
+          <div class="badges"><span class="badge">Football</span><span class="badge">Cinematic</span></div>
+        </div>
+      </article>
+
+      <!-- eCommerce -->
+      <article class="card" data-cat="ecom" data-tags="ecommerce ad product launch" data-title="Skincare Ad — Launch Teaser">
+        <div class="thumb">
+          <img alt="Skincare ad" src="https://images.unsplash.com/photo-1585238342028-4bbc1a36d545?q=80&w=1200&auto=format&fit=crop" />
+          <button class="play" data-src="https://www.youtube.com/embed/ysz5S6PUM-U?autoplay=1">▶ Play</button>
+        </div>
+        <div class="meta">
+          <h3 class="title">Skincare Ad — Launch Teaser</h3>
+          <div class="badges"><span class="badge">eCommerce</span><span class="badge">Ads</span></div>
+        </div>
+      </article>
+
+      <!-- Documentary -->
+      <article class="card" data-cat="doc" data-tags="docu human story" data-title="Documentary — City of Makers">
+        <div class="thumb">
+          <img alt="Documentary still" src="https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=1200&auto=format&fit=crop" />
+          <button class="play" data-src="https://www.youtube.com/embed/aqz-KE-bpKQ?autoplay=1">▶ Play</button>
+        </div>
+        <div class="meta">
+          <h3 class="title">Documentary — City of Makers</h3>
+          <div class="badges"><span class="badge">Documentary</span><span class="badge">Story</span></div>
+        </div>
+      </article>
+
+      <!-- Color grading -->
+      <article class="card" data-cat="grade" data-tags="color grading before after" data-title="Grade Breakdown — Teal & Orange">
+        <div class="thumb">
+          <img alt="Color grading" src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200&auto=format&fit=crop" />
+          <button class="play" data-src="https://www.youtube.com/embed/IUN664s7N-c?autoplay=1">▶ Play</button>
+        </div>
+        <div class="meta">
+          <h3 class="title">Grade Breakdown — Teal & Orange</h3>
+          <div class="badges"><span class="badge">Color Grading</span><span class="badge">Tutorial</span></div>
+        </div>
+      </article>
+
+      <!-- Anime edits -->
+      <article class="card" data-cat="anime" data-tags="anime amv action" data-title="AMV — Rising Shadows">
+        <div class="thumb">
+          <img alt="Anime AMV" src="https://images.unsplash.com/photo-1531390853582-5f17a19c4f40?q=80&w=1200&auto=format&fit=crop" />
+          <button class="play" data-src="https://www.youtube.com/embed/ZXsQAXx_ao0?autoplay=1">▶ Play</button>
+        </div>
+        <div class="meta">
+          <h3 class="title">AMV — Rising Shadows</h3>
+          <div class="badges"><span class="badge">Anime</span><span class="badge">Edit</span></div>
+        </div>
+      </article>
+
+      <!-- Ads -->
+      <article class="card" data-cat="ads" data-tags="brand ad commercial" data-title="Brand Film — We Move">
+        <div class="thumb">
+          <img alt="Brand film" src="https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=1200&auto=format&fit=crop" />
+          <button class="play" data-src="https://www.youtube.com/embed/oHg5SJYRHA0?autoplay=1">▶ Play</button>
+        </div>
+        <div class="meta">
+          <h3 class="title">Brand Film — We Move</h3>
+          <div class="badges"><span class="badge">Ads</span><span class="badge">Cinematic</span></div>
+        </div>
+      </article>
+
+      <article class="card" data-cat="ads" data-tags="promo sale ad" data-title="Festive Promo — 30% OFF">
+        <div class="thumb">
+          <img alt="Festive promo" src="https://images.unsplash.com/photo-1495020689067-958852a7765e?q=80&w=1200&auto=format&fit=crop" />
+          <button class="play" data-src="https://www.youtube.com/embed/5NV6Rdv1a3I?autoplay=1">▶ Play</button>
+        </div>
+        <div class="meta">
+          <h3 class="title">Festive Promo — 30% OFF</h3>
+          <div class="badges"><span class="badge">Ads</span><span class="badge">Social</span></div>
+        </div>
+      </article>
+
+    </section>
+  </main>
+
+  <!-- ======= Modal ======= -->
+  <div class="modal" id="lightbox" aria-modal="true" role="dialog" aria-label="Video preview">
+    <div class="box">
+      <div class="top">
+        <strong id="modalTitle">Preview</strong>
+        <button class="close" id="closeModal" aria-label="Close">✕</button>
+      </div>
+      <div class="frame" id="player"></div>
+    </div>
+  </div>
+
+  <footer class="wrap">
+    Built for <strong>Editkaro.in</strong> · Organized by categories · Fully responsive · Replace thumbnails & links with your own work. <br/>
+    Need help customizing? <a class="clean" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to top</a>
+  </footer>
+
+  <script>
+    // ---------- Filtering ----------
+    const chips = document.querySelectorAll('.chip');
+    const cards = [...document.querySelectorAll('.card')];
+    chips.forEach(ch => ch.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      ch.classList.add('active');
+      const f = ch.dataset.filter;
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      filterAndSearch(f, q);
+    }));
+
+    // ---------- Search ----------
+    document.getElementById('searchForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const q = document.getElementById('searchInput').value.toLowerCase().trim();
+      const active = document.querySelector('.chip.active')?.dataset.filter || 'all';
+      filterAndSearch(active, q);
+    });
+
+    function filterAndSearch(filter, query){
+      cards.forEach(card => {
+        const cat = card.dataset.cat;
+        const text = (card.dataset.title + ' ' + card.dataset.tags).toLowerCase();
+        const passCat = (filter === 'all') || (cat === filter);
+        const passQuery = !query || text.includes(query);
+        card.style.display = (passCat && passQuery) ? '' : 'none';
+      });
+    }
+
+    // ---------- Lightbox ----------
+    const modal = document.getElementById('lightbox');
+    const player = document.getElementById('player');
+    const modalTitle = document.getElementById('modalTitle');
+
+    document.getElementById('gallery').addEventListener('click', (e) => {
+      const btn = e.target.closest('.play');
+      if(!btn) return;
+      const card = btn.closest('.card');
+      const src = btn.dataset.src;
+      const title = card.querySelector('.title').textContent;
+      player.innerHTML = `<iframe src="${src}" allow="autoplay; picture-in-picture" allowfullscreen></iframe>`;
+      modalTitle.textContent = title;
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    });
+
+    document.getElementById('closeModal').addEventListener('click', closeModal);
+    modal.addEventListener('click', (e)=>{ if(e.target === modal) closeModal(); });
+    document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') closeModal(); });
+
+    function closeModal(){
+      modal.classList.remove('open');
+      player.innerHTML = '';
+      document.body.style.overflow = '';
+    }
+  </script>
+</body>
+</html>
