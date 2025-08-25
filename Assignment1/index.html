@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tic Tac Toe — Easy / Medium / Hard AI</title>
+<style>
+  :root{
+    --bg:#0e1320; --panel:#121a2b; --muted:#9fb0c8; --x:#7cc4ff; --o:#ff9aa2; --win:#6ee7b7; --accent:#7c99ff;
+  }
+  html,body{height:100%;margin:0;background:radial-gradient(1200px 600px at 10% 0%,#1a2540 0%,#0e1320 50%,#0a0f1a 100%);color:#e6eef6;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial}
+  .wrap{max-width:900px;margin:28px auto;padding:16px}
+  .panel{background:linear-gradient(180deg,var(--panel),rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.06);border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.45);padding:16px}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  h1{font-size:22px;margin:0}
+  .muted{color:var(--muted)}
+  .controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  select,button{background:rgba(255,255,255,0.06);color:#e6eef6;border:1px solid rgba(255,255,255,0.10);border-radius:10px;padding:8px 12px;font-weight:600;cursor:pointer}
+  button.primary{background:linear-gradient(90deg,var(--accent),#8b5cf6);border:none;color:#0d1020}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:420px;margin:16px auto}
+  .cell{
+    aspect-ratio:1/1; display:grid; place-items:center; font-size:46px; font-weight:900;
+    background:linear-gradient(180deg,#0b162a,#0b1321); border:1px solid rgba(255,255,255,0.06);
+    border-radius:14px; user-select:none; transition:transform .08s, box-shadow .2s, background .2s;
+  }
+  .cell:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(0,0,0,.45)}
+  .cell.disabled{pointer-events:none;opacity:.85}
+  .x{color:var(--x)} .o{color:var(--o)}
+  .win{box-shadow:0 0 0 2px var(--win) inset, 0 0 18px rgba(110,231,183,.35)}
+  .status{display:flex;justify-content:center;gap:8px;align-items:center;min-height:32px;margin-top:6px}
+  .badge{padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.06);font-size:12px}
+  .score{display:flex;gap:10px;justify-content:center;margin-top:8px;flex-wrap:wrap}
+  .score .card{padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);min-width:92px;text-align:center}
+  footer{margin-top:12px;text-align:center;color:var(--muted);font-size:12px}
+  @media (max-width:520px){ .cell{font-size:40px} }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="panel">
+      <div>
+        <h1>Tic Tac Toe</h1>
+        <div class="muted">Play against the computer — choose difficulty.</div>
+      </div>
+      <div class="controls">
+        <label class="muted" for="difficulty">Difficulty</label>
+        <select id="difficulty" aria-label="Difficulty">
+          <option value="easy">Easy</option>
+          <option value="medium" selected>Medium</option>
+          <option value="hard">Hard (Unbeatable)</option>
+        </select>
+        <label class="muted" for="youAre">You play as</label>
+        <select id="youAre" aria-label="You play as">
+          <option value="X" selected>X (first)</option>
+          <option value="O">O (second)</option>
+        </select>
+        <button id="newGame" class="primary">New Game</button>
+        <button id="resetScore">Reset Scores</button>
+      </div>
+    </header>
+
+    <main class="panel" style="margin-top:12px">
+      <div id="board" class="grid" role="grid" aria-label="Tic Tac Toe board"></div>
+      <div class="status" id="status"></div>
+      <div class="score">
+        <div class="card">You (<span id="youMark">X</span>)<br><strong id="youWins">0</strong></div>
+        <div class="card">Computer (<span id="aiMark">O</span>)<br><strong id="aiWins">0</strong></div>
+        <div class="card">Ties<br><strong id="ties">0</strong></div>
+      </div>
+    </main>
+
+    <footer>Tip: Hard uses the minimax algorithm, so the AI won’t lose.</footer>
+  </div>
+
+<script>
+(() => {
+  // Elements
+  const boardEl = document.getElementById('board');
+  const statusEl = document.getElementById('status');
+  const diffEl = document.getElementById('difficulty');
+  const youAreEl = document.getElementById('youAre');
+  const newBtn = document.getElementById('newGame');
+  const resetBtn = document.getElementById('resetScore');
+  const youWinsEl = document.getElementById('youWins');
+  const aiWinsEl = document.getElementById('aiWins');
+  const tiesEl = document.getElementById('ties');
+  const youMarkEl = document.getElementById('youMark');
+  const aiMarkEl = document.getElementById('aiMark');
+
+  // State
+  let board = Array(9).fill(null);
+  let current = 'X';
+  let over = false;
+  let you = youAreEl.value;
+  let ai  = (you === 'X') ? 'O' : 'X';
+  const SCORE_KEY = 'ttt_ai_scores_v1';
+  let scores = JSON.parse(localStorage.getItem(SCORE_KEY) || '{"you":0,"ai":0,"tie":0}');
+  updateScoreUI();
+
+  // Build board UI
+  boardEl.innerHTML = '';
+  for (let i=0;i<9;i++){
+    const b = document.createElement('button');
+    b.className = 'cell';
+    b.type = 'button';
+    b.setAttribute('role','gridcell');
+    b.setAttribute('aria-label','Cell ' + (i+1));
+    b.dataset.idx = i;
+    b.addEventListener('click', () => humanMove(i));
+    b.addEventListener('keydown', (e) => { if((e.key==='Enter'||e.key===' ') && !over) humanMove(i); });
+    boardEl.appendChild(b);
+  }
+
+  // Listeners
+  newBtn.addEventListener('click', newGame);
+  resetBtn.addEventListener('click', () => { scores={you:0,ai:0,tie:0}; persistScores(); updateScoreUI(); });
+  diffEl.addEventListener('change', () => status('Difficulty: ' + diffEl.value.toUpperCase()));
+  youAreEl.addEventListener('change', () => { you = youAreEl.value; ai = other(you); youMarkEl.textContent = you; aiMarkEl.textContent = ai; newGame(); });
+
+  // Start
+  youMarkEl.textContent = you; aiMarkEl.textContent = ai;
+  render();
+  maybeAIMove();
+
+  function newGame(){
+    board = Array(9).fill(null);
+    over = false;
+    current = 'X';
+    clearHighlights();
+    render();
+    status(`New game — you are ${you}.`);
+    maybeAIMove();
+  }
+
+  function status(html){
+    statusEl.innerHTML = `<span class="badge">${html}</span>`;
+  }
+
+  function render(){
+    for (let i=0;i<9;i++){
+      const el = cell(i);
+      const v = board[i];
+      el.textContent = v || '';
+      el.classList.toggle('x', v==='X');
+      el.classList.toggle('o', v==='O');
+      el.classList.toggle('disabled', !!v || over);
+    }
+    if (!over) status(`Turn: <strong>${current}</strong>`);
+  }
+
+  function humanMove(i){
+    if (over || board[i]) return;
+    if (current !== you) return; // not your turn
+    place(i, you);
+    const res = endCheck();
+    if (res) return;
+    current = ai;
+    render();
+    // brief delay for UX
+    setTimeout(() => aiMove(), 220);
+  }
+
+  function aiMove(){
+    if (over) return;
+    const idx = pickMove(diffEl.value, ai, board);
+    place(idx, ai);
+    endCheck();
+    if (!over){ current = you; render(); }
+  }
+
+  function maybeAIMove(){
+    if (!over && current !== you) setTimeout(aiMove, 220);
+  }
+
+  function place(i, mark){
+    board[i] = mark;
+  }
+
+  function endCheck(){
+    const res = checkWinner(board);
+    if (res.done){
+      over = true;
+      if (res.winner){
+        // highlight win
+        res.line.forEach(i => cell(i).classList.add('win'));
+        if (res.winner === you){ scores.you++; status(`You win!`); }
+        else { scores.ai++; status(`Computer wins!`); }
+      } else {
+        scores.tie++; status(`It's a tie.`);
+      }
+      persistScores(); updateScoreUI(); render();
+      return true;
+    }
+    return false;
+  }
+
+  function clearHighlights(){
+    [...boardEl.children].forEach(c => c.classList.remove('win','disabled'));
+  }
+
+  function cell(i){ return boardEl.children[i]; }
+  const other = p => (p==='X' ? 'O' : 'X');
+
+  // ---------- AI ----------
+  function pickMove(diff, me, b){
+    const avail = b.map((v,i)=>v?null:i).filter(v=>v!==null);
+
+    if (diff === 'easy'){
+      return avail[Math.floor(Math.random()*avail.length)];
+    }
+
+    if (diff === 'medium'){
+      // 1) win if possible
+      const w = findWinningMove(b, me);
+      if (w != null) return w;
+      // 2) block if needed
+      const opp = other(me);
+      const block = findWinningMove(b, opp);
+      if (block != null) return block;
+      // 3) center, then corners, then random
+      if (b[4] == null) return 4;
+      const corners = [0,2,6,8].filter(i => b[i]==null);
+      if (corners.length) return corners[Math.floor(Math.random()*corners.length)];
+      return avail[Math.floor(Math.random()*avail.length)];
+    }
+
+    // hard (minimax, unbeatable)
+    return bestMoveMinimax(b, me);
+  }
+
+  function findWinningMove(b, player){
+    for (let i=0;i<9;i++){
+      if (b[i]) continue;
+      b[i] = player;
+      const res = checkWinner(b);
+      b[i] = null;
+      if (res.done && res.winner === player) return i;
+    }
+    return null;
+  }
+
+  function bestMoveMinimax(b, me){
+    let bestScore = -Infinity, best = null;
+    for (let i=0;i<9;i++){
+      if (b[i]) continue;
+      b[i] = me;
+      const score = minimax(b, false, me, other(me), 0);
+      b[i] = null;
+      if (score > bestScore){ bestScore = score; best = i; }
+    }
+    return best;
+  }
+
+  function minimax(b, isMax, me, opp, depth){
+    const res = checkWinner(b);
+    if (res.done){
+      if (res.winner === me) return 10 - depth;
+      if (res.winner === opp) return depth - 10;
+      return 0;
+    }
+    if (isMax){
+      let best = -Infinity;
+      for (let i=0;i<9;i++){
+        if (b[i]) continue;
+        b[i] = me;
+        best = Math.max(best, minimax(b, false, me, opp, depth+1));
+        b[i] = null;
+      }
+      return best;
+    } else {
+      let best = Infinity;
+      for (let i=0;i<9;i++){
+        if (b[i]) continue;
+        b[i] = opp;
+        best = Math.min(best, minimax(b, true, me, opp, depth+1));
+        b[i] = null;
+      }
+      return best;
+    }
+  }
+
+  // ---------- Rules ----------
+  const LINES = [
+    [0,1,2],[3,4,5],[6,7,8], // rows
+    [0,3,6],[1,4,7],[2,5,8], // cols
+    [0,4,8],[2,4,6]          // diagonals
+  ];
+  function checkWinner(b){
+    for (const [a,c,d] of LINES){
+      if (b[a] && b[a]===b[c] && b[a]===b[d]){
+        return {done:true, winner:b[a], line:[a,c,d]};
+      }
+    }
+    if (b.every(Boolean)) return {done:true, winner:null, line:[]};
+    return {done:false};
+  }
+
+  // ---------- Scores ----------
+  function persistScores(){
+    localStorage.setItem(SCORE_KEY, JSON.stringify(scores));
+  }
+  function updateScoreUI(){
+    youWinsEl.textContent = scores.you;
+    aiWinsEl.textContent = scores.ai;
+    tiesEl.textContent = scores.tie;
+  }
+})();
+</script>
+</body>
+</html>
