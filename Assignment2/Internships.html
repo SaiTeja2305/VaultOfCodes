@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Internships</title>
+  <style>
+    /* Background with animation */
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(120deg, #d9e4f5, #f1f5ff, #fcefe6);
+      background-size: 300% 300%;
+      animation: gradientBG 10s ease infinite;
+      margin: 0;
+      padding: 40px;
+      color: #333;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Title */
+    h1 {
+      text-align: center;
+      font-size: 3rem;
+      margin-bottom: 30px;
+      background: linear-gradient(90deg, #1a73e8, #ff7f50);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    /* Container */
+    .internship-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    /* Card Style */
+    .card {
+      background: #fff;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-10px) scale(1.03);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Card Header */
+    .card h3 {
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+      color: #111;
+      text-align: center;
+    }
+
+    /* List */
+    .card ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 20px 0;
+    }
+
+    .card ul li {
+      margin: 10px 0;
+      padding-left: 25px;
+      position: relative;
+      font-size: 0.95rem;
+    }
+
+    .card ul li::before {
+      content: "✔";
+      position: absolute;
+      left: 0;
+      color: #1a73e8;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    /* Button */
+    .btn {
+      display: inline-block;
+      padding: 12px 25px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      background: linear-gradient(90deg, #1a73e8, #43cea2);
+      color: #fff;
+      transition: 0.4s ease;
+      box-shadow: 0 4px 12px rgba(26, 115, 232, 0.4);
+    }
+
+    .btn:hover {
+      background: linear-gradient(90deg, #ff7f50, #ff6f91);
+      transform: scale(1.08);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🌟 Internships</h1>
+
+  <div class="internship-container">
+    <div class="card">
+      <h3>Web Development Internship Program</h3>
+      <ul>
+        <li>Duration: 1 month / 2 months</li>
+        <li>Location: Virtual</li>
+        <li>Stipend: -</li>
+        <li>Start date: 05/11/2023</li>
+      </ul>
+      <a href="https://github.com/SaiTeja2305/VaultOfCodes.git" class="btn">View Details</a>
+    </div>
+
+    <div class="card">
+      <h3>App Development Internship Program</h3>
+      <ul>
+        <li>Duration: 1 month / 2 months</li>
+        <li>Location: Virtual</li>
+        <li>Stipend: -</li>
+        <li>Start date: 05/11/2023</li>
+      </ul>
+      <a href="https://github.com/SaiTeja2305?tab=repositories" class="btn">View Details</a>
+    </div>
+
+    <div class="card">
+      <h3>Python Programming Internship Program</h3>
+      <ul>
+        <li>Duration: 1 month / 2 months</li>
+        <li>Location: Virtual</li>
+        <li>Stipend: -</li>
+        <li>Start date: 05/11/2023</li>
+      </ul>
+      <a href="https://github.com/SaiTeja2305/AIML-2320030180.git" class="btn">View Details</a>
+    </div>
+
+    <div class="card">
+      <h3>Java Programming Internship Program</h3>
+      <ul>
+        <li>Duration: 1 month / 2 months</li>
+        <li>Location: Virtual</li>
+        <li>Stipend: -</li>
+        <li>Start date: 05/11/2023</li>
+      </ul>
+      <a href="https://github.com/SaiTeja2305/AOOP.git" class="btn">View Details</a>
+    </div>
+  </div>
+
+</body>
+</html>
