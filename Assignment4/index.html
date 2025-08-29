@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Web Dev Mini Projects</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial;background:#f8fafc;color:#0f172a}
+    header{padding:24px;border-bottom:1px solid #e2e8f0;background:#fff;position:sticky;top:0}
+    .container{max-width:1100px;margin:0 auto;padding:0 16px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;padding:16px}
+    .card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+    a.btn{display:inline-block;background:#0ea5e9;color:#fff;text-decoration:none;padding:10px 14px;border-radius:12px}
+    footer{padding:20px;color:#64748b;text-align:center}
+    h1{margin:0}
+  </style>
+</head>
+<body>
+  <header><div class="container"><h1>Web Dev Mini Projects</h1><div>Open a project below:</div></div></header>
+  <main class="container">
+    <section class="grid">
+      <article class="card"><h3>To‑Do List</h3><p>Task manager with filter/search and LocalStorage.</p><a class="btn" href="todo/index.html">Open</a></article>
+      <article class="card"><h3>Blog Platform</h3><p>Create, edit, delete posts with tags (LocalStorage).</p><a class="btn" href="blog/index.html">Open</a></article>
+      <article class="card"><h3>Product Landing Page</h3><p>Responsive marketing page with features and pricing.</p><a class="btn" href="landing/index.html">Open</a></article>
+      <article class="card"><h3>Rock • Paper • Scissors</h3><p>Simple browser game with score.</p><a class="btn" href="game/index.html">Open</a></article>
+      <article class="card"><h3>Online Booking</h3><p>Book time slots; prevents double booking.</p><a class="btn" href="booking/index.html">Open</a></article>
+    </section>
+  </main>
+  <footer>© 2025 Mini Projects Bundle</footer>
+</body>
+</html>
