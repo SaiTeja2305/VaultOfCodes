@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mini Blog</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>📝 Mini Blog</h1>
+    <div class="bar">
+      <input id="q" placeholder="Search title, content or #tag" />
+      <button id="new">New Post</button>
+    </div>
+  </header>
+  <main>
+    <section id="editor" class="card hidden">
+      <h2 id="form-title">New Post</h2>
+      <form id="post-form">
+        <input id="title" placeholder="Post title" required />
+        <textarea id="content" rows="6" placeholder="Write something..."></textarea>
+        <input id="tags" placeholder="Tags (comma separated)" />
+        <div class="row">
+          <button>Save</button>
+          <button type="button" id="cancel">Cancel</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="posts" class="grid"></section>
+  </main>
+  <footer>Client‑side demo blog • No backend required</footer>
+  <script src="script.js"></script>
+</body>
+</html>
