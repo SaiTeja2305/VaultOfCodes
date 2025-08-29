@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Online Booking</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <h1>📅 Online Booking</h1>
+
+    <form id="booking-form" class="card">
+      <div class="row">
+        <label>Name <input id="name" required /></label>
+        <label>Email <input id="email" type="email" required /></label>
+      </div>
+      <div class="row">
+        <label>Date <input id="date" type="date" required /></label>
+        <label>Time
+          <select id="time" required></select>
+        </label>
+      </div>
+      <button>Book Slot</button>
+    </form>
+
+    <section class="card">
+      <h2>Your Bookings</h2>
+      <table id="table">
+        <thead><tr><th>Name</th><th>Email</th><th>Date</th><th>Time</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
